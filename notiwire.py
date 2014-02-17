@@ -12,13 +12,23 @@
 from flask import Flask, request
 import os
 import re
+import sys
+
+# import settings
+if not os.path.exists(os.path.join(os.path.dirname(globals()['__file__']), 'settings.py')):
+    sys.stderr.write("Failed to locate the settings file. Quitting.\n")
+    sys.exit(1)
+try:
+    from settings import *
+except ImportError:
+    sys.stderr.write("Failed to import from the settings file. Quitting.\n")
+    sys.exit(1)
+
 
 # Initialize the Flask application
 app = Flask('Online Notiwire')
 
 # Paths
-morganPath = '/Users/michael/Dropbox/Desktop/'
-# morganPath = '/var/websites/notifier' # christyo bytt til denne
 lightPath = '/light'
 coffeePath = '/coffee'
 
@@ -119,7 +129,7 @@ def postLight(affiliation):
         return msgLightMalformed
 
     # Write to file
-    filename = morganPath + affiliation + lightPath
+    filename = FILE_PATH + affiliation + lightPath
     if writeFile(filename, light):
         return "CONFIRMED! READBACK:\nThe light at " + affiliation + "'s office is " + light
     else:
@@ -146,7 +156,7 @@ def postCoffee(affiliation):
         return msgDatetimeMalformed
 
     # Write to file
-    filename = morganPath + affiliation + coffeePath
+    filename = FILE_PATH + affiliation + coffeePath
     if writeFile(filename, pots + '\n' + datetime):
         return "CONFIRMED! READBACK:\n" + pots + " pots at " + affiliation + "'s office, last one at " + datetime
     else:
@@ -155,9 +165,6 @@ def postCoffee(affiliation):
 # Run the app :)
 if datetimeTests():
     if __name__ == "__main__":
-        app.run(
-            host="localhost",
-            port=int("5000")
-        )
+        app.run()
 else:
     print('ERROR: a test failed, fix it plz')
