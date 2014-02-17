@@ -14,7 +14,7 @@ import re
 import sys
 
 from flask import Flask, request
-from werkzeug.contrib.fixers import ProxyFix
+from utils import ReverseProxied
 
 
 # import settings
@@ -165,7 +165,7 @@ def postCoffee(affiliation):
     else:
         return "DENIED! An error occured, tell the people at appkom@online.ntnu.no"
 
-app.wsgi_app = ProxyFix(app.wsgi_app)
+app.wsgi_app = ReverseProxied(app.wsgi_app)
 
 # Run the app :)
 if datetimeTests():
