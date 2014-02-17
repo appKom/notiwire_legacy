@@ -9,10 +9,14 @@
 # curl --data "light=on" http://online.ntnu.no/nabla/light
 # curl --data "pots=5&datetime=5. March 2014 12:14:01" http://online.ntnu.no/solan/coffee
 
-from flask import Flask, request
+
 import os
 import re
 import sys
+
+from flask import Flask, request
+from werkzeug.contrib.fixers import ProxyFix
+
 
 # import settings
 if not os.path.exists(os.path.join(os.path.dirname(globals()['__file__']), 'settings.py')):
