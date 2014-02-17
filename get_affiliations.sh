@@ -1,7 +1,6 @@
 # Online Notiwire
 # Shell script for getting all affiliations
 # appKom: appkom@online.ntnu.no
-# author: michael@informatikk.org
 
 echo ""
 

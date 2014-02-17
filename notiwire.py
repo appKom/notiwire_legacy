@@ -3,7 +3,6 @@
 # Online Notiwire
 # middlelayer between Online Notifier and OmegaV NotiPis
 # appKom: appkom@online.ntnu.no
-# author: michael@informatikk.org
 
 # Test Notiwire by pretending to be a NotiPi:
 # curl --data "light=on" http://online.ntnu.no/nabla/light
