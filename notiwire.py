@@ -42,6 +42,8 @@ msgLightMissing = "ERROR: nooo....misa light no here....nooo"
 msgLightMalformed = "ERROR: nooo....misa light no good....noooo"
 msgPotsMissing = "ERROR: nooo....misa coffeepots no here...noooo"
 msgPotsMalformed = "ERROR: nooo....misa coffeepots no good...noooo"
+msgApiKeyMissing = "ERROR: nooo....misa api key no here...noooo"
+msgApiKeyMalformed = "ERROR: nooo....misa api key no good...noooo"
 msgDatetimeMissing = "ERROR: nooo....misa datetime no here....noooo"
 msgDatetimeMalformed = "ERROR: nooo....misa datetime no valid....noooo"
 
@@ -66,6 +68,11 @@ def checkPots(pots):
         return 1 <= pots and pots <= 1000
     except ValueError:
         return False
+
+def checkApiKey(apiKey):
+    if apiKey == 'api_key_here':
+        return True
+    return False
 
 def checkDatetime(datetime):
     # Regex it
@@ -143,6 +150,12 @@ def postLight(affiliation):
 def postCoffee(affiliation):
     if not checkAffiliation(affiliation):
         return msgAffiliation
+
+    if not 'api_key' in request.form.keys():
+        return msgApiKeyMissing
+    apiKey = request.form['api_key']
+    if not checkApiKey(apiKey):
+        return msgApiKeyMalformed
 
     # Retrieve pots
     if not 'pots' in request.form.keys():
