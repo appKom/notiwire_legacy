@@ -11,9 +11,10 @@
 
 import os
 import re
+import sqlite3
 import sys
 
-from flask import Flask, request
+from flask import Flask, request, g
 from utils import ReverseProxied
 
 
@@ -34,6 +35,7 @@ app = Flask('Online Notiwire')
 # Paths
 lightPath = '/light'
 coffeePath = '/coffee'
+databasePath= os.path.join(app.root_path, 'notiwire.db')
 
 # Messages
 msgError = "ERROR: nooo... nooo...misa superman no home...nooo...."
@@ -50,6 +52,49 @@ msgDatetimeMalformed = "ERROR: nooo....misa datetime no valid....noooo"
 @app.route("/")
 def hello():
     return '<pre> Hey, welcome to Online Notiwire,<br /> middlelayer for Online Notifier.<br /> It is an API for OmegaV NotiPis.<br /> <br /> Say hi at <a href="mailto:appkom@online.ntnu.no">appkom@online.ntnu.no</a>.<br /> </pre>'
+
+def connectDB():
+    rv = sqlite3.connect(databasePath)
+    rv.row_factory = sqlite3.Row
+    return rv
+
+def getDB():
+    if not hasattr(g, 'sqlite_db'):
+        g.sqlite_db = connectDB()
+    return g.sqlite_db
+
+def closeDB():
+    if hasattr(g, 'sqlite_db'):
+        g.sqlite_db.close()
+
+
+def initDB():
+    with app.app_context():
+        db = getDB()
+        with app.open_resource('schema.sql', mode='r') as f:
+            db.cursor().executescript(f.read())
+        db.commit()
+
+def setApiKey(affiliation, apiKey):
+    '''
+    Adds/updates an api key for an affiliation
+    '''
+    if not checkAffiliation(affiliation):
+        return msgAffiliation
+    if not apiKey:
+        return msgApiKeyMissing
+
+    with app.app_context():
+        db = getDB()
+        try:
+            db.execute('INSERT INTO affiliation_keys (affiliation, key) VALUES (?, ?)', [affiliation, apiKey])
+            print('Added api key')
+        except sqlite3.IntegrityError:
+            # Key already exists, updating
+            db.execute('UPDATE affiliation_keys SET key = ? WHERE affiliation = ?', [apiKey, affiliation])
+            print('Updated api key')
+        db.commit()
+
 
 def checkAffiliation(affiliation):
     # Affiliations must be updated once in a while.
@@ -69,10 +114,11 @@ def checkPots(pots):
     except ValueError:
         return False
 
-def checkApiKey(apiKey):
-    if apiKey == 'api_key_here':
-        return True
-    return False
+def checkApiKey(affiliation, apiKey):
+    db = getDB()
+    cur = db.execute('SELECT * FROM affiliation_keys WHERE affiliation = ? AND key = ?', [affiliation, apiKey])
+    result = cur.fetchone()
+    return result != None
 
 def checkDatetime(datetime):
     # Regex it
@@ -131,6 +177,12 @@ def postLight(affiliation):
     if not checkAffiliation(affiliation):
         return msgAffiliation
 
+    if not 'api_key' in request.form.keys():
+        return msgApiKeyMissing
+    apiKey = request.form['api_key']
+    if not checkApiKey(affiliation, apiKey):
+        return msgApiKeyMalformed
+
     # Retrieve light
     if not 'light' in request.form.keys():
         return msgLightMissing
@@ -154,7 +206,7 @@ def postCoffee(affiliation):
     if not 'api_key' in request.form.keys():
         return msgApiKeyMissing
     apiKey = request.form['api_key']
-    if not checkApiKey(apiKey):
+    if not checkApiKey(affiliation, apiKey):
         return msgApiKeyMalformed
 
     # Retrieve pots
