@@ -9,7 +9,7 @@ Setup
 
 ```python
 import notiwire
-notiwire.initDB() # Initialize database
+notiwire.initDB() # Initialize empty database (only run if db is new)
 
 notiwire.setApiKey('affiliation_name', 'api_key') # Add/update api keys
 ```
