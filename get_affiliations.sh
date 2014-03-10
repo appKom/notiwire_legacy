@@ -13,6 +13,8 @@ grep -oEi "\".*\"" |
 # tr joins all lines by a comma
 tr "\\n" "," |
 # sed removes all entries after the first hit on "blue" (from the color palette dropdown menu in options.html)
-sed 's/"blue".*//'
+sed 's/"blue".*//' |
+# sed adds the DEBUG affiliation which OmegaV uses when testing Notipis
+sed -e 's/\(^.*\)/\"DEBUG\",\1/'
 
 echo ""
