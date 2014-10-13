@@ -100,7 +100,7 @@ def checkAffiliation(affiliation):
     # Affiliations must be updated once in a while.
     # A shell script for getting all affiliations is provided.
     affiliations = [
-        "DEBUG","abakus","alf","berg","delta","emil","aarhonen","hybrida","leonardo","mannhullet","online","nabla","solan","spanskroeret","volvox","de_folkevalgte","dhs","dionysos","erudio","eureka","geolf","gengangere","jump_cut","ludimus","paideia","panoptikon","pareto","primetime","psi","sturm_und_drang","utopia","dion","esn","iaeste","isu","projeksjon","signifikant","soma","symbiosis","fraktur","kom","logistikkstudentene","nutrix","tihlde","tim_og_shaenko","tjsf","vivas","dusken","universitetsavisa","gemini","adressa","samfundet","velferdstinget","studentparlamentet_hist","studenttinget_ntnu","ntnu","rektoratet_ntnu","hist","dmmh",
+        "DEBUG","abakus","alf","berg","delta","emil","aarhonen","hc","hybrida","leonardo","mannhullet","online","nabla","solan","spanskroeret","volvox","de_folkevalgte","dhs","dionysos","erudio","eureka","geolf","gengangere","jump_cut","ludimus","paideia","panoptikon","pareto","primetime","psi","sturm_und_drang","utopia","dion","esn","iaeste","isu","projeksjon","signifikant","soma","symbiosis","fraktur","kom","logistikkstudentene","nutrix","tihlde","tim_og_shaenko","tjsf","vivas","dusken","universitetsavisa","gemini","adressa","samfundet","velferdstinget","studentparlamentet_hist","studenttinget_ntnu","ntnu","rektoratet_ntnu","hist","dmmh",
     ]
     return affiliation in affiliations
 
