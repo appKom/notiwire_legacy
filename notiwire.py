@@ -9,6 +9,7 @@
 # curl --data "pots=5&datetime=5. March 2014 12:14:01" http://online.ntnu.no/solan/coffee
 
 
+import datetime
 import os
 import re
 import sqlite3
@@ -216,17 +217,12 @@ def postCoffee(affiliation):
     if not checkPots(pots):
         return msgPotsMalformed
 
-    # Retrieve datetime
-    if not 'datetime' in request.form.keys():
-        return msgDatetimeMissing
-    datetime = request.form['datetime']
-    if not checkDatetime(datetime):
-        return msgDatetimeMalformed
+    coffee_date = datetime.datetime.now().strftime('%d. %B %Y %H:%M:%S')
 
     # Write to file
     filename = FILE_PATH + affiliation + coffeePath
-    if writeFile(filename, pots + '\n' + datetime):
-        return "CONFIRMED! READBACK:\n" + pots + " pots at " + affiliation + "'s office, last one at " + datetime
+    if writeFile(filename, pots + '\n' + coffee_date):
+        return "CONFIRMED! READBACK:\n" + pots + " pots at " + affiliation + "'s office, last one at " + coffee_date
     else:
         return "DENIED! An error occured, tell the people at appkom@online.ntnu.no"
 
